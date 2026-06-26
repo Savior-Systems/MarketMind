@@ -4,6 +4,7 @@ This file is auto-updated by a GitHub Action. Add yourself by contributing!
 
 | Name | Email |
 |------|-------|
+| Hasan Rizvee | rizveehasan@gmail.com |
 | rizvee | rizveehasan@gmail.com |
 
 ---

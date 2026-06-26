@@ -87,6 +87,9 @@ jobs:
         run: |
           docker build -t marketmind-frontend:test ./frontend
 
+      - name: Create dummy .env file
+        run: touch .env
+
       - name: Verify Docker Compose Config
         run: |
           docker compose config --quiet

@@ -1,0 +1,55 @@
+# ==============================================================================
+# MarketMind Git Ignore Configuration
+# ==============================================================================
+
+# 1. MarketMind Planning Documents (Confidential Strategy & Blueprints)
+MARKETMIND_STRATEGY.md
+WEAKNESS_TO_STRENGTH.md
+EXECUTION_BLUEPRINT.md
+GAP_FILL_CONTENT.md
+
+# 2. External AI Coding Agents Directory
+tools/
+
+# 3. Agent Tooling Files (Ignore all workspace configurations for agents)
+setup-agents.sh
+agents.json
+docker-compose.agents.yml
+.mmdos.yaml
+DEVELOPMENT_AGENTS.md
+
+# 4. Agent-specific Virtual Environments, Configs & Caches
+**/venv/
+**/.venv/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.mmdos_cache/
+.mmdos.local.yaml
+.env
+
+# 5. Real Agents Specific Outputs & Logs
+# - Multimodel Dev OS logs & sessions
+mmdos.log
+mmdos-session.json
+mmdos.lock
+.mmdos_cache/
+
+# - Caveman cache & token tracking files
+.caveman_cache/
+caveman.log
+caveman_tokens.json
+.cavemanrc.local
+
+# - Antigravity Superpowers workspace outputs
+.superpower_cache/
+superpower.log
+.antigravity/
+superpower-dashboard-build/
+
+# 6. Standard Development Ignores
+node_modules/
+dist/
+build/
+.DS_Store
+Thumbs.db

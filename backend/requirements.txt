@@ -1,0 +1,35 @@
+# ==============================================================================
+# MarketMind Backend Requirements Configuration
+# ==============================================================================
+
+# Core Web Framework
+fastapi==0.115.*
+uvicorn[standard]
+
+# Database, ORM & Migrations
+sqlalchemy[asyncio]==2.0.*
+asyncpg
+alembic
+
+# Config & Security
+pydantic-settings
+python-jose[cryptography]
+bcrypt
+
+# Asynchronous Tasks & Caching
+celery[redis]
+redis
+
+# LLM Frameworks & Tools
+httpx
+litellm
+chromadb
+langgraph
+pydantic-ai
+
+# Testing Suite (TDD Support)
+pytest
+pytest-asyncio
+pytest-cov
+anyio
+aiosqlite

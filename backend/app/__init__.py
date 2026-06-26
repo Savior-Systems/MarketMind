@@ -1,0 +1,1 @@
+# MarketMind Backend app package

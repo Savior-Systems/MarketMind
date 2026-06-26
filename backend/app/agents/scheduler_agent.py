@@ -3,7 +3,7 @@ import re
 import logging
 import datetime
 from zoneinfo import ZoneInfo
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 
 from app.agents.base import BaseAgent, AgentOutput

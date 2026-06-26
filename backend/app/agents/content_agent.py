@@ -54,8 +54,8 @@ class ContentAgent(BaseAgent):
             brand_context = await self.get_brand_context()
 
             # 2. Build system prompt based on platform guidelines
-            system_prompt = f"You are an expert social media copywriter and content strategist.\n"
-            system_prompt += f"Using the following brand context rules, generate high-converting copy:\n"
+            system_prompt = "You are an expert social media copywriter and content strategist.\n"
+            system_prompt += "Using the following brand context rules, generate high-converting copy:\n"
             system_prompt += f"{brand_context}\n\n"
             system_prompt += f"Platform requirements for {platform.upper()}:\n"
 

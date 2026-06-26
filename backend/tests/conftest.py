@@ -3,14 +3,13 @@ from typing import AsyncGenerator, Generator
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import declarative_base
 
 from app.core.database import Base
-from app.models.user import User
-from app.models.brand import BrandProfile
-from app.models.content import ContentPiece
-from app.models.agent_run import AgentRun
-from app.models.discord_verification import DiscordVerification
+from app.models.user import User  # noqa: F401
+from app.models.brand import BrandProfile  # noqa: F401
+from app.models.content import ContentPiece  # noqa: F401
+from app.models.agent_run import AgentRun  # noqa: F401
+from app.models.discord_verification import DiscordVerification  # noqa: F401
 
 # Async SQLite in-memory database configuration for fast and clean local TDD
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"

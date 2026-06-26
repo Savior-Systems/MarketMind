@@ -2,7 +2,6 @@ import os
 import time
 import logging
 import httpx
-from datetime import datetime, timezone
 from fastapi import APIRouter, Response
 
 router = APIRouter()
@@ -154,7 +153,7 @@ MOCK_IMPERFECTIONS = [
 ]
 
 def parse_category(issue: dict) -> str:
-    labels = [l.get("name", "") for l in issue.get("labels", [])]
+    labels = [lbl.get("name", "") for lbl in issue.get("labels", [])]
     for label in labels:
         label_lower = label.lower()
         if label_lower in ["ui", "user interface"]:
@@ -238,7 +237,7 @@ async def fetch_github_issues() -> list:
                             pr_url = i.get("pull_request", {}).get("html_url")
                         else:
                             # Search body for references like "pulls/42" or use a mock fallback
-                            pr_url = f"https://github.com/Savior-Systems/MarketMind/pull/1" # default fallback
+                            pr_url = "https://github.com/Savior-Systems/MarketMind/pull/1" # default fallback
                             
                     reactions = i.get("reactions", {})
                     reactions_count = reactions.get("+1", 0)

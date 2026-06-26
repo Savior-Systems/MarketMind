@@ -1,8 +1,9 @@
+import os
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from datetime import timedelta
 
 from app.core.database import get_db
 from app.core.security import (
@@ -12,6 +13,7 @@ from app.core.security import (
     get_current_user
 )
 from app.models.user import User
+from app.models.discord_verification import DiscordVerification
 from app.schemas.schemas import UserCreate, UserResponse, Token
 
 router = APIRouter()
@@ -55,11 +57,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
 async def read_current_user(current_user: User = Depends(get_current_user)):
     """Get active user profile details."""
     return current_user
-
-import httpx
-import os
-from fastapi import Query
-from app.models.discord_verification import DiscordVerification
 
 @router.get("/github/callback")
 async def github_callback(

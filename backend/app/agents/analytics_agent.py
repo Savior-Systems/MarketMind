@@ -2,7 +2,7 @@ import json
 import re
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 
 from sqlalchemy.future import select

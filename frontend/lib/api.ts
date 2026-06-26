@@ -24,6 +24,10 @@ async function request(path: string, options: RequestInit = {}) {
     throw new Error(errorBody.detail || `Request failed with status ${res.status}`);
   }
 
+  if (res.status === 204) {
+    return null;
+  }
+
   return res.json();
 }
 
@@ -58,6 +62,25 @@ export async function getMe() {
 
 export async function getBrands() {
   return request('/brands/');
+}
+
+export async function createBrand(brandData: {
+  name: string;
+  voice_description: string;
+  tone: string;
+  target_audience: string;
+  keywords: string[];
+}) {
+  return request('/brands/', {
+    method: 'POST',
+    body: JSON.stringify(brandData),
+  });
+}
+
+export async function deleteBrand(brandId: number) {
+  return request(`/brands/${brandId}`, {
+    method: 'DELETE',
+  });
 }
 
 export async function getContent(params?: Record<string, string>) {
@@ -114,4 +137,8 @@ export async function getPublicMetrics() {
     throw new Error('Failed to fetch public metrics');
   }
   return res.json();
+}
+
+export async function getTaskStatus(taskId: string) {
+  return request(`/agents/task/${taskId}`);
 }

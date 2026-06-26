@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: marketmind-db
+    environment:
+      POSTGRES_DB: marketmind
+      POSTGRES_USER: marketmind
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - marketmind-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marketmind"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: marketmind-redis
+    volumes:
+      - redisdata:/data
+    networks:
+      - marketmind-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: marketmind-chromadb
+    ports:
+      - "8001:8000"
+    volumes:
+      - chromadata:/chroma/chroma
+    networks:
+      - marketmind-network
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: marketmind-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - marketmind-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: marketmind-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000/api/v1
+    depends_on:
+      - backend
+    networks:
+      - marketmind-network
+    restart: unless-stopped
+
+  celery_worker:
+    build: ./backend
+    container_name: marketmind-celery-worker
+    command: celery -A app.core.celery_app worker -l info -c 2
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    networks:
+      - marketmind-network
+    restart: unless-stopped
+
+networks:
+  marketmind-network:
+    name: marketmind-network
+    driver: bridge
+
+volumes:
+  pgdata:
+    name: marketmind-pgdata
+  redisdata:
+    name: marketmind-redisdata
+  chromadata:
+    name: marketmind-chromadata

@@ -37,6 +37,15 @@ cd MarketMind
 cp .env.example .env
 docker compose up -d
 ```
+## 🚀 One-Click Deploy
+
+Deploy MarketMind to your own cloud in minutes:
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/marketmind)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Savior-Systems/MarketMind)
+[![Deploy on Fly.io](https://fly.io/button.svg)](https://fly.io/launch/marketmind)
+
+
 
 For detailed platform options or running with local models (e.g., Ollama), check the [Quick Start Guide](docs/QUICKSTART.md).
 

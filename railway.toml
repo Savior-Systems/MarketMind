@@ -1,0 +1,10 @@
+[build]
+builder = "nixpacks"
+buildCommand = "echo 'Railway deploys from Dockerfile'"
+
+[deploy]
+startCommand = "docker compose up -d"
+healthcheckPath = "/health"
+
+[service]
+port = 8000

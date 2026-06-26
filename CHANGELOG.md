@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 ### Fixed
+- create dummy .env for compose config verification
 - add public folder placeholder to prevent build failures
 - resolve lockfile mismatch and fix ruff linter errors
 

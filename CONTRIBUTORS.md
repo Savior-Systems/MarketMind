@@ -1,12 +1,10 @@
 # Contributors 🙏
 
-This file details the individuals who have helped build MarketMind.
+This file is auto-updated by a GitHub Action. Add yourself by contributing!
 
-> **Note**: This file is auto-updated by a GitHub Action. Add yourself by contributing!
-
-| Username | Contributions |
-|----------|--------------|
-| @Savior-Systems | Creator & Maintainer |
+| Name | Email |
+|------|-------|
+| rizvee | rizveehasan@gmail.com |
 
 ---
 

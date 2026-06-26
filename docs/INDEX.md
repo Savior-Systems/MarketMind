@@ -7,6 +7,7 @@ Welcome to the central documentation index. Here you will find guides covering d
 - [Quick Start Guide](QUICKSTART.md) — Detailed setup instructions
 - [Deployment Guide](DEPLOY.md) — Self-hosting on various platforms
 - [Demo Recording Script](DEMO_SCRIPT.md) — Storyboard and instructions for demo.gif
+- [Discord Setup Guide](DISCORD_SETUP.md) — Server template and bot configurations
 
 ## Architecture
 - [Backend Architecture](ARCHITECTURE.md) — FastAPI, agents, database schema

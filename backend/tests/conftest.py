@@ -10,6 +10,7 @@ from app.models.user import User
 from app.models.brand import BrandProfile
 from app.models.content import ContentPiece
 from app.models.agent_run import AgentRun
+from app.models.discord_verification import DiscordVerification
 
 # Async SQLite in-memory database configuration for fast and clean local TDD
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"

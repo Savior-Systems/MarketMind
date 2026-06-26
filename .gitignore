@@ -9,7 +9,8 @@ EXECUTION_BLUEPRINT.md
 GAP_FILL_CONTENT.md
 
 # 2. External AI Coding Agents Directory
-tools/
+tools/*
+!tools/discord_bot/
 
 # 3. Agent Tooling Files (Ignore all workspace configurations for agents)
 setup-agents.sh

@@ -2,59 +2,97 @@ name: Update Changelog
 
 on:
   push:
-    branches:
-      - main
-
-permissions:
-  contents: write
+    branches: [ main ]
 
 jobs:
   update-changelog:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2 # Fetch history to read commit message
 
-      - name: Check PR Labels
-        id: check-pr
-        run: |
-          PR_NUMBER=$(git log -1 --pretty=%B | grep -oE '#[0-9]+' | head -n 1 | sed 's/#//')
-          if [ -z "$PR_NUMBER" ]; then
-            echo "No PR found in commit message. Skipping."
-            echo "should_run=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          LABELS=$(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}" | jq -r '.labels[].name')
-          
-          if echo "$LABELS" | grep -qE 'release|changelog'; then
-            echo "Found matching label in PR #${PR_NUMBER}"
-            echo "should_run=true" >> $GITHUB_OUTPUT
-            echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
-          else
-            echo "No matching labels (release or changelog) found. Skipping."
-            echo "should_run=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
       - name: Update CHANGELOG.md
-        if: steps.check-pr.outputs.should_run == 'true'
         run: |
-          PR_TITLE=$(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.check-pr.outputs.pr_number }}" | jq -r '.title')
-          PR_BODY=$(curl -s "https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.check-pr.outputs.pr_number }}" | jq -r '.body')
-          DATE=$(date +%Y-%m-%d)
-          
-          ENTRY="### Added\n- ${PR_TITLE}\n\n${PR_BODY}"
-          
-          sed -i "/# Changelog/a \\\n## [PR #${{ steps.check-pr.outputs.pr_number }}] - ${DATE}\n${ENTRY}" CHANGELOG.md
-          
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+          python -c '
+          import os
+          import sys
+          import re
+
+          commit_msg = os.environ.get("COMMIT_MSG", "")
+          # Match feat: or fix: (possibly with scope like feat(auth):)
+          match = re.search(r"^(feat|fix)(?:\([^)]+\))?:\s*(.+)$", commit_msg, re.IGNORECASE | re.MULTILINE)
+          if not match:
+              print("Not a feat: or fix: commit. Skipping.")
+              sys.exit(0)
+
+          change_type = match.group(1).lower()
+          desc = match.group(2).strip()
+
+          with open("CHANGELOG.md", "r", encoding="utf-8") as f:
+              lines = f.readlines()
+
+          unreleased_index = -1
+          first_version_index = -1
+          for idx, line in enumerate(lines):
+              if "## [Unreleased]" in line:
+                  unreleased_index = idx
+              elif re.match(r"^## \[\d+\.\d+\.\d+\]", line) and first_version_index == -1:
+                  first_version_index = idx
+
+          if unreleased_index == -1 and first_version_index == -1:
+              for idx, line in enumerate(lines):
+                  if line.startswith("## ") and first_version_index == -1:
+                      first_version_index = idx
+
+          if unreleased_index == -1:
+              insert_pos = first_version_index if first_version_index != -1 else 8
+              lines.insert(insert_pos, "## [Unreleased]\n### Added\n### Fixed\n\n")
+              for idx, line in enumerate(lines):
+                  if "## [Unreleased]" in line:
+                      unreleased_index = idx
+                      break
+
+          target_section = "### Added" if change_type == "feat" else "### Fixed"
+          section_index = -1
+          for idx in range(unreleased_index + 1, len(lines)):
+              if lines[idx].startswith("## "):
+                  break
+              if lines[idx].strip() == target_section:
+                  section_index = idx
+                  break
+
+          if section_index == -1:
+              lines.insert(unreleased_index + 1, f"{target_section}\n")
+              section_index = unreleased_index + 1
+
+          bullet = f"- {desc}\n"
+          lines.insert(section_index + 1, bullet)
+
+          with open("CHANGELOG.md", "w", encoding="utf-8") as f:
+              f.writelines(lines)
+
+          print(f"Added descriptor to {target_section}")
+          '
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+
+      - name: Commit and Push Changes
+        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md
-          git commit -m "chore(changelog): auto-update for PR #${{ steps.check-pr.outputs.pr_number }}"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          if git diff --quiet --cached CHANGELOG.md; then
+            echo "No changes in CHANGELOG.md"
+          else
+            git commit -m "docs: auto-update CHANGELOG.md"
+            git push
+          fi

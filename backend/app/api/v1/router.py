@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1 import auth, brands, content, agents, public_metrics, analytics
+from app.api.v1 import auth, brands, content, agents, public_metrics, analytics, imperfections
 
 api_router = APIRouter()
 
@@ -10,3 +10,4 @@ api_router.include_router(content.router, prefix="/content", tags=["Content"])
 api_router.include_router(agents.router, prefix="/agents", tags=["Agents"])
 api_router.include_router(public_metrics.router, prefix="/public", tags=["Public Metrics"])
 api_router.include_router(analytics.router, prefix="/analytics", tags=["Analytics"])
+api_router.include_router(imperfections.router, prefix="/public", tags=["Public Imperfections"])

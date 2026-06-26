@@ -146,3 +146,11 @@ export async function getTaskStatus(taskId: string) {
 export async function getSavings(brandId: number) {
   return request(`/analytics/savings?brand_profile_id=${brandId}`);
 }
+
+export async function getImperfections() {
+  const res = await fetch(`${API_URL}/public/imperfections`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch imperfections');
+  }
+  return res.json();
+}

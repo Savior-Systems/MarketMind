@@ -22,6 +22,9 @@ Welcome to the central documentation index. Here you will find guides covering d
 - [Changelog](../CHANGELOG.md) — Version history
 - [Contributors](../CONTRIBUTORS.md) — Hall of fame
 
+## Community & Development
+- [Initial Imperfections](IMPERFECTIONS.md) — 10 known rough edges and issues tracker
+
 ## About
 - Built by one. Owned by everyone.
 - 1 Million Stars Challenge: [Live Counter](https://savior-systems.github.io/MarketMind/)

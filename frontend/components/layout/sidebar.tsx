@@ -9,7 +9,8 @@ import {
   BarChart3, 
   Settings, 
   Brain, 
-  Menu 
+  Menu,
+  Wrench
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
   { name: 'Calendar', href: '/calendar', icon: Calendar },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Imperfections', href: '/imperfections', icon: Wrench },
 ];
 
 export function Sidebar() {

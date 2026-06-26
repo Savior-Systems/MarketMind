@@ -1,0 +1,109 @@
+name: Update Founders List
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Daily at 00:00 UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-founders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch Stargazers and Update FOUNDERS.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -c '
+          import os
+          import urllib.request
+          import json
+
+          repo = os.getenv("GITHUB_REPOSITORY", "Savior-Systems/MarketMind")
+          token = os.getenv("GITHUB_TOKEN")
+
+          req_repo = urllib.request.Request(
+              f"https://api.github.com/repos/{repo}",
+              headers={
+                  "User-Agent": "MarketMind-Workflow",
+                  "Accept": "application/vnd.github.v3+json"
+              }
+          )
+          if token:
+              req_repo.add_header("Authorization", f"token {token}")
+
+          try:
+              with urllib.request.urlopen(req_repo) as r:
+                  repo_data = json.loads(r.read().decode())
+              stars = repo_data.get("stargazers_count", 0)
+              print(f"Current stars count: {stars}")
+              if stars > 1000:
+                  print("Stargazers count is > 1000. Skipping FOUNDERS.md update.")
+                  exit(0)
+          except Exception as e:
+              print(f"Error checking repo status: {e}")
+
+          # Fetch stargazers
+          stargazers = []
+          for page in range(1, 11):
+              url = f"https://api.github.com/repos/{repo}/stargazers?per_page=100&page={page}"
+              req = urllib.request.Request(
+                  url,
+                  headers={
+                      "User-Agent": "MarketMind-Workflow",
+                      "Accept": "application/vnd.github.v3+json"
+                  }
+              )
+              if token:
+                  req.add_header("Authorization", f"token {token}")
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      page_data = json.loads(r.read().decode())
+                      if not page_data:
+                          break
+                      stargazers.extend(page_data)
+                      if len(page_data) < 100:
+                          break
+              except Exception as e:
+                  print(f"Error fetching page {page}: {e}")
+                  break
+
+          if len(stargazers) > 1000:
+              print(f"Fetched {len(stargazers)} stargazers, which is > 1000. Skipping.")
+              exit(0)
+
+          content = """# MarketMind Founding Members 🏛️
+
+This document lists the first 1000 stargazers who helped kickstart the MarketMind open-source journey.
+
+| Stargazer | Avatar |
+| --- | --- |
+"""
+          for user in stargazers:
+              username = user.get("login")
+              avatar = user.get("avatar_url")
+              content += f"| @{username} | ![@{username}]({avatar}&s=40) |\n"
+
+          with open("FOUNDERS.md", "w", encoding="utf-8") as f:
+              f.write(content)
+          print("Successfully updated FOUNDERS.md")
+          '
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add FOUNDERS.md
+          if git diff --quiet --cached FOUNDERS.md; then
+            echo "No changes in FOUNDERS.md"
+          else
+            git commit -m "docs: auto-update FOUNDERS.md stargazers list"
+            git push
+          fi

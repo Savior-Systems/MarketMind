@@ -1,0 +1,63 @@
+name: Update Contributors
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  update-contributors:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Contributor List
+        run: |
+          git log --format='%aN <%aE>' | grep -v 'github-actions' | sort -u > raw_contributors.txt
+          
+          echo "# Contributors 🙏" > CONTRIBUTORS.md
+          echo "" >> CONTRIBUTORS.md
+          echo "This file is auto-updated by a GitHub Action. Add yourself by contributing!" >> CONTRIBUTORS.md
+          echo "" >> CONTRIBUTORS.md
+          echo "| Name | Email |" >> CONTRIBUTORS.md
+          echo "|------|-------|" >> CONTRIBUTORS.md
+          
+          while read -r line; do
+            name=$(echo "$line" | cut -d'<' -f1 | xargs)
+            email=$(echo "$line" | cut -d'<' -f2 | cut -d'>' -f1)
+            echo "| ${name} | ${email} |" >> CONTRIBUTORS.md
+          done < raw_contributors.txt
+          
+          echo "" >> CONTRIBUTORS.md
+          echo "---" >> CONTRIBUTORS.md
+          echo "" >> CONTRIBUTORS.md
+          echo "## See Also" >> CONTRIBUTORS.md
+          echo "" >> CONTRIBUTORS.md
+          echo "- [📖 README](README.md) — Project overview" >> CONTRIBUTORS.md
+          echo "- [🤝 Contributing](CONTRIBUTING.md) — How to contribute" >> CONTRIBUTORS.md
+          echo "- [📜 Code of Conduct](CODE_OF_CONDUCT.md) — Community standards" >> CONTRIBUTORS.md
+          echo "- [🔒 Security](SECURITY.md) — Report vulnerabilities" >> CONTRIBUTORS.md
+          echo "- [📋 Changelog](CHANGELOG.md) — Version history" >> CONTRIBUTORS.md
+          echo "- [🏛️ Governance](GOVERNANCE.md) — Decision making" >> CONTRIBUTORS.md
+          echo "- [🙏 Contributors](CONTRIBUTORS.md) — Hall of fame" >> CONTRIBUTORS.md
+          echo "- [📚 Documentation Hub](docs/INDEX.md) — All docs" >> CONTRIBUTORS.md
+          echo "" >> CONTRIBUTORS.md
+          echo "*Built by one. Owned by everyone.*" >> CONTRIBUTORS.md
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add CONTRIBUTORS.md
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore(contributors): auto-update contributors list"
+            git push origin main
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

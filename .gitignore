@@ -49,7 +49,20 @@ superpower-dashboard-build/
 
 # 6. Standard Development Ignores
 node_modules/
+.next/
+next-env.d.ts
 dist/
 build/
+.vscode/
+.idea/
+*.swp
+*.swo
 .DS_Store
 Thumbs.db
+*.egg-info/
+.cavemanrc
+*.db
+.coverage
+**/coverage/
+htmlcov/
+

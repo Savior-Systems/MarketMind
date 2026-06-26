@@ -1,55 +1,88 @@
-# MarketMind
+# <p align="center">🧠 MarketMind</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![Built By One. Owned By Everyone.](https://img.shields.io/badge/Narrative-Built%20By%20One.%20Owned%20By%20Everyone.-blueviolet)](MARKETMIND_STRATEGY.md)
+<p align="center">
+  <img src="https://img.shields.io/github/stars/Savior-Systems/MarketMind?style=for-the-badge&color=8b5cf6" alt="GitHub Stars" />
+  <img src="https://img.shields.io/github/license/Savior-Systems/MarketMind?style=for-the-badge&color=blue" alt="License" />
+  <img src="https://img.shields.io/discord/1234567890?style=for-the-badge&color=7289da&label=Discord" alt="Discord" />
+  <img src="https://img.shields.io/docker/pulls/saviorsystems/marketmind?style=for-the-badge&color=2496ed" alt="Docker Pulls" />
+</p>
 
-MarketMind is an open-source, self-hostable AI-powered marketing automation platform. It empowers solo developers, small businesses, and content creators to replace expensive, proprietary marketing stacks (like Buffer, Hootsuite, Jasper, and Canva) with a single, free tool.
-
-By utilizing swarms of autonomous AI agents, MarketMind creates, schedules, and analyzes social media campaigns across multiple channels, running either locally (via local LLMs like Ollama) or through API cloud models.
-
----
-
-## Key Features
-
-1.  **AI Content Swarms**: Automatically crafts platform-optimized copy for Twitter/X, LinkedIn, Instagram, and Facebook using context-aware brand voice profiles.
-2.  **Optimal Scheduler Agent**: Evaluates posting historical windows and dynamically coordinates Celery task queues for maximum platform engagement.
-3.  **Analytics & Insights**: Generates automated summaries, checks campaign consistency scores, and outputs performance recommendations.
-4.  **Cost Transparency & Control**: Includes a live tracker to monitor API expenditures and calculate monthly SaaS cost savings. Includes full support for local LLMs for a $0 operational cost.
+<p align="center"><strong>The AI marketing team that lives on your server.</strong></p>
+<p align="center">Open source. Self-hosted. Free forever.</p>
 
 ---
 
-## Quick Start (60-Second Deploy)
+<!-- TODO: add demo GIF -->
 
-### Prerequisites
-*   [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
-*   [Node.js](https://nodejs.org/) & npm (optional, for local frontend building)
+## What Does It Replace?
 
-### 1. Clone and Configure
+| Tool | Monthly Cost | MarketMind |
+|------|-------------|------------|
+| Buffer | $120 | $0 |
+| Jasper | $99 | $0 |
+| Hootsuite | $249 | $0 |
+| Canva Pro | $60 | $0 |
+| Mailchimp | $75 | $0 |
+| **Total** | **$603/mo** | **$0/mo** |
+
+---
+
+## Quick Start (60 Seconds)
+
+Deploy your local self-hosted instance in seconds using Docker Compose:
+
 ```bash
 git clone https://github.com/Savior-Systems/MarketMind.git
 cd MarketMind
-cp backend/.env.example backend/.env
+cp .env.example .env
+docker compose up -d
 ```
 
-### 2. Boot Local Services
-```bash
-docker compose -f docker-compose.dev.yml up -d
-```
-
-### 3. Run Backend Migrations & Tests
-```bash
-make migrate
-make test
-```
+For detailed platform options or running with local models (e.g., Ollama), check the [Quick Start Guide](docs/QUICKSTART.md).
 
 ---
 
-## Contributing
+## Features
 
-We welcome contributions from the community! Check out our guidelines to get started. By contributing, you agree that your work will be licensed under the MIT License.
+*   **✨ AI Content Generation**: Automatically crafts platform-optimized copy for Twitter/X, LinkedIn, and Instagram using context-aware brand voice profiles.
+*   **📅 Smart Scheduling**: Calculates optimal posting windows based on platform engagement behaviors.
+*   **📊 Analytics & Insights**: Compiles metrics and provides performance recommendations for social campaigns.
+*   **✉️ Email Campaigns**: Generates and coordinates newsletter blasts.
+*   **🧠 Brand Voice Memory**: Stores your unique assets, tones, and target audience definitions.
+*   **🔌 Multi-Platform Integration**: Direct connection with social publishing destinations.
+
+---
+
+## "Built By One. Owned By Everyone."
+
+MarketMind was founded on the philosophy that modern SaaS platforms can be built by solo developer-creators using agentic AI swarms, and subsequently given back to the community. We are aiming for **1 Million Stars** to prove that self-hosted open-source software can disrupt centralized proprietary products.
+
+---
+
+## Community
+
+Join the community to collaborate, ask questions, or report bugs:
+*   [Join our Discord Server](https://discord.gg/marketmind)
+*   [Contributing Guide](CONTRIBUTING.md)
+*   [Code of Conduct](CODE_OF_CONDUCT.md)
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Distributed under the MIT License. See `LICENSE` for more information.
 
-*Built By One. Owned By Everyone.*
+---
+
+## See Also
+
+- [📖 README](README.md) — Project overview
+- [🤝 Contributing](CONTRIBUTING.md) — How to contribute
+- [📜 Code of Conduct](CODE_OF_CONDUCT.md) — Community standards
+- [🔒 Security](SECURITY.md) — Report vulnerabilities
+- [📋 Changelog](CHANGELOG.md) — Version history
+- [🏛️ Governance](GOVERNANCE.md) — Decision making
+- [🙏 Contributors](CONTRIBUTORS.md) — Hall of fame
+- [📚 Documentation Hub](docs/INDEX.md) — All docs
+
+*Built by one. Owned by everyone.*

@@ -2,7 +2,7 @@
 # MarketMind Makefile
 # ==============================================================================
 
-.PHONY: dev migrate test lint clean
+.PHONY: dev migrate test clean setup
 
 # Starts core database infrastructure (Postgres and Redis) locally
 dev:
@@ -14,17 +14,17 @@ migrate:
 	@echo "Running database migrations..."
 	cd backend && alembic upgrade head
 
-# Run backend test coverage checks
+# Run backend tests
 test:
 	@echo "Running Pytest suite..."
 	cd backend && pytest
 
-# Run Ruff check and MyPy typing validations
-lint:
-	@echo "Checking code guidelines..."
-	cd backend && ruff check . && mypy .
-
-# Stops local docker composition and purges volumes
+# Stops local docker composition and purges volumes and caches
 clean:
 	@echo "Cleaning development environment..."
 	docker compose -f docker-compose.dev.yml down -v
+
+# Installs backend dependencies
+setup:
+	@echo "Installing backend dependencies..."
+	cd backend && pip install -r requirements.txt

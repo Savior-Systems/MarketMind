@@ -8,6 +8,8 @@ on:
 jobs:
   update-founders:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -79,13 +81,15 @@ jobs:
               print(f"Fetched {len(stargazers)} stargazers, which is > 1000. Skipping.")
               exit(0)
 
-          content = """# MarketMind Founding Members 🏛️
+          import textwrap
+          content = textwrap.dedent("""\
+              # MarketMind Founding Members 🏛️
 
-This document lists the first 1000 stargazers who helped kickstart the MarketMind open-source journey.
+              This document lists the first 1000 stargazers who helped kickstart the MarketMind open-source journey.
 
-| Stargazer | Avatar |
-| --- | --- |
-"""
+              | Stargazer | Avatar |
+              | --- | --- |
+          """)
           for user in stargazers:
               username = user.get("login")
               avatar = user.get("avatar_url")

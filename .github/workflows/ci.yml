@@ -34,8 +34,8 @@ jobs:
 
       - name: Run Pytest
         env:
-          DATABASE_URL: sqlite+aiosqlite:///:memory:
-          SECRET_KEY: testsecretkeyvaluefortestingonly
+          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
+          SECRET_KEY: "testsecretkeyvaluefortestingonly"
         run: |
           cd backend
           python -m pytest tests/ -v

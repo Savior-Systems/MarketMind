@@ -8,6 +8,8 @@ on:
 jobs:
   track-stars:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -86,17 +88,19 @@ jobs:
               daily_delta = 0
               growth_rate = 0.0
 
-          content_to_write = f"""# MarketMind Star Tracker 🚀
+          import textwrap
+          content_to_write = textwrap.dedent(f"""\
+              # MarketMind Star Tracker 🚀
 
-Current: **{current_stars}** stars
-Change: **+{daily_delta}** in last 24 hours
-Daily growth rate: **{growth_rate}%**
-Last updated: {now.strftime("%Y-%m-%d %H:%M:%S UTC")}
+              Current: **{current_stars}** stars
+              Change: **+{daily_delta}** in last 24 hours
+              Daily growth rate: **{growth_rate}%**
+              Last updated: {now.strftime("%Y-%m-%d %H:%M:%S UTC")}
 
-Track live: [Million Star Challenge](https://savior-systems.github.io/MarketMind)
+              Track live: [Million Star Challenge](https://savior-systems.github.io/MarketMind)
 
-## History
-"""
+              ## History
+          """)
           for ts, count in sorted(history, key=lambda x: x[0], reverse=True)[:100]:
               content_to_write += f"- {ts.isoformat()}: {count} stars\n"
 

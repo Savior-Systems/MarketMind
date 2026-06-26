@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketMind — The Million Star Challenge</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030303;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.35);
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Background glow details */
+    .glow-sphere {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      background: linear-gradient(to right, #ffffff, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 4rem 0 3rem;
+    }
+
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      color: var(--primary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    .badge-live span {
+      width: 8px;
+      height: 8px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to bottom, #ffffff 60%, #a1a1aa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtext {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Star Counter Section */
+    .counter-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      margin-bottom: 4rem;
+      position: relative;
+    }
+
+    .counter-value {
+      font-size: 5rem;
+      font-weight: 800;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 30px var(--primary-glow);
+    }
+
+    .counter-label {
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0.1337%;
+      background: linear-gradient(to right, var(--primary), #d8b4fe);
+      border-radius: 6px;
+      transition: width 1.5s ease-out;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    .progress-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .days-badge {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--card-border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 4rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      background: #7c3aed;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(139, 92, 246, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Grid Sections */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    /* What is MarketMind */
+    .feature-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .feature-icon {
+      font-size: 1.25rem;
+      margin-top: 0.15rem;
+    }
+
+    .feature-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .feature-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .comparison {
+      margin-top: 2rem;
+      border-top: 1px solid var(--card-border);
+      padding-top: 1.5rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .comp-box {
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--card-border);
+    }
+
+    .comp-box.highlight {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.05);
+    }
+
+    .comp-name {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .comp-price {
+      font-weight: 800;
+      font-size: 1.125rem;
+    }
+
+    .comp-price.free {
+      color: var(--success);
+    }
+
+    /* Savings Calculator */
+    .calc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .calc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+
+    .calc-item:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .calc-item.checked {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.03);
+    }
+
+    .calc-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .calc-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      border-radius: 4px;
+    }
+
+    .calc-price {
+      font-weight: bold;
+      color: var(--text-muted);
+    }
+
+    .calc-item.checked .calc-price {
+      color: #fff;
+    }
+
+    .calc-results {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px dashed var(--success);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .calc-saved-title {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--success);
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+
+    .calc-saved-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .calc-saved-year {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Founding 1,000 Section */
+    .founding-section {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .founding-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .founding-desc {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .founding-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 4rem;
+      background: linear-gradient(to right bottom, rgba(255,255,255,0.02), rgba(255,255,255,0.05));
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+    }
+
+    .founding-claimed {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .founding-total {
+      font-size: 0.875rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    /* Milestones Timeline */
+    .timeline-container {
+      margin-bottom: 5rem;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .timeline-node {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .timeline-node.reached {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.02);
+    }
+
+    .timeline-node.reached::after {
+      content: '✓';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: var(--success);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timeline-node.next-active {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+      background: rgba(139, 92, 246, 0.05);
+      animation: pulse-glow 2s infinite;
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+      50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.6); }
+      100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+    }
+
+    .node-target {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .node-reward {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-node.reached .node-target {
+      color: var(--success);
+    }
+
+    .timeline-node.next-active .node-target {
+      color: var(--primary);
+    }
+
+    /* Deploy Section */
+    .deploy-section {
+      margin-bottom: 5rem;
+    }
+
+    .code-box {
+      background: #000;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: #38bdf8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .code-box span {
+      user-select: all;
+    }
+
+    .btn-copy {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .btn-copy:hover {
+      color: #fff;
+    }
+
+    .one-click-deploy {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .one-click-deploy a {
+      transition: transform 0.2s;
+    }
+
+    .one-click-deploy a:hover {
+      transform: translateY(-2px);
+    }
+
+    .one-click-deploy img {
+      height: 38px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .social-links a:hover {
+      color: #fff;
+    }
+
+    .footer-quote {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--primary);
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 2.5rem;
+      }
+      .counter-value {
+        font-size: 3.5rem;
+      }
+      .one-click-deploy {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-sphere"></div>
+
+  <header>
+    <div class="logo">
+      <span>🧠</span> MarketMind
+    </div>
+    <a href="https://github.com/Savior-Systems/MarketMind" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">⭐ Star Project</a>
+  </header>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="badge-live">
+        <span></span> LIVE STATS (REFRESHES EVERY 30S)
+      </div>
+      <h1>THE MILLION STAR CHALLENGE</h1>
+      <p class="subtext">Can one developer build and scale a production-ready AI marketing swarm, and reach 1,000,000 GitHub stars in 30 days?</p>
+
+      <!-- Counter Card -->
+      <div class="counter-card">
+        <div class="days-badge" id="day-counter">Day 10 of 30</div>
+        <div class="counter-value" id="star-count">1,337</div>
+        <div class="counter-label">Stars Achieved</div>
+        
+        <div class="progress-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="progress-details">
+          <span>0% Completed</span>
+          <span>1,000,000 Goal</span>
+        </div>
+      </div>
+
+      <div class="cta-buttons">
+        <a href="https://github.com/Savior-Systems/MarketMind" target="_blank" class="btn btn-primary">⭐ Star on GitHub</a>
+        <a href="https://discord.gg/invite-link-placeholder" target="_blank" class="btn btn-secondary">💬 Join Discord</a>
+      </div>
+    </section>
+
+    <!-- Grid info -->
+    <div class="grid-2">
+      <!-- What is MarketMind -->
+      <section class="card">
+        <h2 class="section-title">What is MarketMind?</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">The AI marketing team that lives on your server. Completely open-source, private, and highly autonomous.</p>
+        
+        <div class="feature-item">
+          <div class="feature-icon">🧠</div>
+          <div>
+            <div class="feature-title">Brand Memory</div>
+            <div class="feature-desc">Learns your style, target audience, and brand voice through vector stores.</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">✍️</div>
+          <div>
+            <div class="feature-title">Swarm Content Gen</div>
+            <div class="feature-desc">Generates platform-tailored copy for Twitter, LinkedIn, Instagram automatically.</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">📅</div>
+          <div>
+            <div class="feature-title">Optimal Scheduler</div>
+            <div class="feature-desc">Picks highest-converting times for posting using historical platform stats.</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <div>
+            <div class="feature-title">Performance Feedback</div>
+            <div class="feature-desc">Analyzes post impressions/engagement and improves future copy iterations.</div>
+          </div>
+        </div>
+
+        <div class="comparison">
+          <p style="font-weight: 600; font-size: 0.9rem;">Annual Tooling Cost Comparison:</p>
+          <div class="comparison-grid">
+            <div class="comp-box">
+              <div class="comp-name">Buffer Pro</div>
+              <div class="comp-price">$120</div>
+            </div>
+            <div class="comp-box">
+              <div class="comp-name">Hootsuite</div>
+              <div class="comp-price">$249</div>
+            </div>
+            <div class="comp-box highlight">
+              <div class="comp-name" style="color: var(--primary);">MarketMind</div>
+              <div class="comp-price free">$0</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Savings Calculator -->
+      <section class="card" id="calculator">
+        <h2 class="section-title">Self-Host Savings Calculator</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Select the services you currently pay for to see how much self-hosting MarketMind saves you.</p>
+        
+        <div class="calc-list">
+          <div class="calc-item checked" onclick="toggleCalcItem(this, 120)">
+            <div class="calc-checkbox-label">
+              <input type="checkbox" class="calc-checkbox" checked onclick="event.stopPropagation();">
+              <span>Buffer Premium</span>
+            </div>
+            <div class="calc-price">$120/yr</div>
+          </div>
+
+          <div class="calc-item checked" onclick="toggleCalcItem(this, 99)">
+            <div class="calc-checkbox-label">
+              <input type="checkbox" class="calc-checkbox" checked onclick="event.stopPropagation();">
+              <span>Jasper AI Content</span>
+            </div>
+            <div class="calc-price">$99/yr</div>
+          </div>
+
+          <div class="calc-item" onclick="toggleCalcItem(this, 249)">
+            <div class="calc-checkbox-label">
+              <input type="checkbox" class="calc-checkbox" onclick="event.stopPropagation();">
+              <span>Hootsuite Standard</span>
+            </div>
+            <div class="calc-price">$249/yr</div>
+          </div>
+
+          <div class="calc-item checked" onclick="toggleCalcItem(this, 60)">
+            <div class="calc-checkbox-label">
+              <input type="checkbox" class="calc-checkbox" checked onclick="event.stopPropagation();">
+              <span>Canva Pro (Team Share)</span>
+            </div>
+            <div class="calc-price">$60/yr</div>
+          </div>
+
+          <div class="calc-item" onclick="toggleCalcItem(this, 75)">
+            <div class="calc-checkbox-label">
+              <input type="checkbox" class="calc-checkbox" onclick="event.stopPropagation();">
+              <span>Mailchimp Automation</span>
+            </div>
+            <div class="calc-price">$75/yr</div>
+          </div>
+        </div>
+
+        <div class="calc-results">
+          <div class="calc-saved-title">Total Annual Pledged Savings</div>
+          <div class="calc-saved-value" id="saved-value">$279</div>
+          <div class="calc-saved-year" id="saved-month">That's $23.25/month back in your pocket!</div>
+        </div>
+
+        <button onclick="shareSavings()" class="btn btn-primary" style="width: 100%; justify-content: center;">🐦 Share My Savings</button>
+      </section>
+    </div>
+
+    <!-- Founding 1,000 Section -->
+    <section class="founding-section">
+      <h2 class="founding-title">The Founding 1,000</h2>
+      <p class="founding-desc">The first 1,000 developers to star MarketMind will be immortalized forever as founding members in our documentation.</p>
+      <div class="founding-box">
+        <div class="founding-claimed" id="founding-spots">1,337 / 1,000</div>
+        <div class="founding-total" id="founding-status">All spots claimed! Thank you!</div>
+      </div>
+    </section>
+
+    <!-- Milestones Timeline -->
+    <section class="timeline-container">
+      <h2 class="section-title" style="text-align: center; margin-bottom: 2rem;">Milestones &amp; Swarm Upgrades</h2>
+      <div class="timeline" id="timeline">
+        <!-- Will be dynamically updated by JS -->
+      </div>
+    </section>
+
+    <!-- Deploy Section -->
+    <section class="deploy-section card">
+      <h2 class="section-title">Ready in 30 Seconds</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Launch the complete swarm (PostgreSQL, Redis, Celery, FastAPI, Next.js) locally on your system in one step.</p>
+      
+      <div class="code-box">
+        <span>git clone https://github.com/Savior-Systems/MarketMind.git &amp;&amp; cd MarketMind &amp;&amp; ./scripts/start.sh</span>
+        <button class="btn-copy" onclick="copyDeployCode(this)">Copy</button>
+      </div>
+
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; text-align: center; font-size: 0.875rem;">Or deploy to your cloud with one click:</p>
+      <div class="one-click-deploy">
+        <a href="https://railway.app/template/marketmind" target="_blank">
+          <img src="https://railway.app/button.svg" alt="Deploy on Railway">
+        </a>
+        <a href="https://render.com/deploy?repo=https://github.com/Savior-Systems/MarketMind" target="_blank">
+          <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render">
+        </a>
+        <a href="https://fly.io/launch/marketmind" target="_blank">
+          <img src="https://fly.io/button.svg" alt="Deploy on Fly.io">
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="social-links">
+      <a href="https://github.com/Savior-Systems/MarketMind" target="_blank">GitHub</a>
+      <a href="https://discord.gg/invite-link-placeholder" target="_blank">Discord</a>
+      <a href="https://twitter.com/MarketMind_AI" target="_blank">Twitter</a>
+    </div>
+    <p>&copy; 2026 MarketMind. Open-source under MIT License.</p>
+    <div class="footer-quote">Built by one. Owned by everyone.</div>
+  </footer>
+
+  <script>
+    // Configuration
+    const MILESTONES_CONFIG = [
+      { target: 1000, reward: "Live coding session" },
+      { target: 5000, reward: "Developer AMA Session" },
+      { target: 10000, reward: "Interactive live dashboard" },
+      { target: 25000, reward: "Celery task visualizer" },
+      { target: 50000, reward: "Brand Voice Customizer UI" },
+      { target: 100000, reward: "Advanced Analytics Module" },
+      { target: 250000, reward: "Enterprise Multi-brand support" },
+      { target: 500000, reward: "Dedicated AI model fine-tuning" },
+      { target: 1000000, reward: "MarketMind SaaS hosting launch" }
+    ];
+
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:8000/api/v1/public'
+      : 'https://marketmind-backend.onrender.com/api/v1/public'; // Fallback to production API
+
+    // Active day calculation from June 17, 2026
+    function updateDayCounter() {
+      const startDate = new Date('2026-06-17T00:00:00Z');
+      const today = new Date();
+      const diffTime = Math.max(0, today - startDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const dayNum = Math.min(30, diffDays === 0 ? 1 : diffDays);
+      document.getElementById('day-counter').innerText = `Day ${dayNum} of 30`;
+    }
+
+    // Interactive Calculator
+    let totalSaved = 279;
+    function toggleCalcItem(el, value) {
+      const checkbox = el.querySelector('.calc-checkbox');
+      el.classList.toggle('checked');
+      checkbox.checked = el.classList.contains('checked');
+      
+      let sum = 0;
+      document.querySelectorAll('.calc-item').forEach(item => {
+        if (item.classList.contains('checked')) {
+          const itemVal = parseInt(item.getAttribute('onclick').match(/\d+/)[0]);
+          sum += itemVal;
+        }
+      });
+      totalSaved = sum;
+      
+      // Animate saved value count-up
+      document.getElementById('saved-value').innerText = `$${totalSaved}`;
+      document.getElementById('saved-month').innerText = `That's $${(totalSaved / 12).toFixed(2)}/month back in your pocket!`;
+    }
+
+    function shareSavings() {
+      const text = `I just calculated my savings with MarketMind! I could save $${totalSaved}/year by switching to this self-hosted, open-source AI marketing swarm 🤖 Star the challenge here:`;
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://github.com/Savior-Systems/MarketMind')}`;
+      window.open(url, '_blank');
+    }
+
+    function copyDeployCode(btn) {
+      const text = btn.previousElementSibling.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = 'Copy', 2000);
+      });
+    }
+
+    // Number counting animations
+    function animateCounter(id, start, end, duration) {
+      if (start === end) return;
+      const range = end - start;
+      let current = start;
+      const increment = end > start ? 1 : -1;
+      const stepTime = Math.abs(Math.floor(duration / range));
+      const timer = setInterval(() => {
+        current += increment;
+        document.getElementById(id).innerText = current.toLocaleString();
+        if (current === end) {
+          clearInterval(timer);
+        }
+      }, stepTime > 50 ? stepTime : 5);
+    }
+
+    // Fetch and populate metrics
+    async function fetchMetrics() {
+      try {
+        const response = await fetch(`${API_BASE}/metrics`);
+        const data = await response.json();
+        
+        const stars = data.github?.stars ?? 0;
+        const currentStars = parseInt(document.getElementById('star-count').innerText.replace(/,/g, '')) || 0;
+        
+        // Update main counter
+        if (currentStars === 0 || currentStars === 1337) {
+          document.getElementById('star-count').innerText = stars.toLocaleString();
+        } else {
+          animateCounter('star-count', currentStars, stars, 1000);
+        }
+
+        // Update progress bar
+        const pct = Math.min(100, (stars / 1000000) * 100);
+        document.getElementById('progress-bar').style.width = `${pct}%`;
+        document.querySelector('.progress-details span:first-child').innerText = `${pct.toFixed(4)}% Completed`;
+
+        // Update founding spots
+        if (stars < 1000) {
+          document.getElementById('founding-spots').innerText = `${stars} / 1,000`;
+          document.getElementById('founding-status').innerText = `${1000 - stars} spots remaining! Star now!`;
+        } else {
+          document.getElementById('founding-spots').innerText = `${stars.toLocaleString()} / 1,000`;
+          document.getElementById('founding-status').innerText = `All 1,000 spots claimed! But you can still join the movement.`;
+        }
+
+        // Generate Milestones Timeline
+        renderTimeline(stars);
+      } catch (err) {
+        console.error("Failed to load live metrics:", err);
+      }
+    }
+
+    function renderTimeline(stars) {
+      const container = document.getElementById('timeline');
+      container.innerHTML = '';
+      
+      let nextActiveFound = false;
+
+      MILESTONES_CONFIG.forEach(m => {
+        const node = document.createElement('div');
+        node.className = 'timeline-node';
+        
+        const targetStr = m.target >= 1000000 ? `${m.target / 1000000}M` : `${m.target / 1000}K`;
+        
+        if (stars >= m.target) {
+          node.classList.add('reached');
+        } else if (!nextActiveFound) {
+          node.classList.add('next-active');
+          nextActiveFound = true;
+        }
+
+        node.innerHTML = `
+          <div class="node-target">${targetStr} Stars</div>
+          <div class="node-reward">${m.reward}</div>
+        `;
+        container.appendChild(node);
+      });
+    }
+
+    // Init Page
+    updateDayCounter();
+    fetchMetrics();
+    setInterval(fetchMetrics, 30000); // 30s interval
+  </script>
+</body>
+</html>

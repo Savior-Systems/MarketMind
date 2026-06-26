@@ -6,6 +6,7 @@ Welcome to the central documentation index. Here you will find guides covering d
 - [README](../README.md) — Project overview and quick start
 - [Quick Start Guide](QUICKSTART.md) — Detailed setup instructions
 - [Deployment Guide](DEPLOY.md) — Self-hosting on various platforms
+- [Demo Recording Script](DEMO_SCRIPT.md) — Storyboard and instructions for demo.gif
 
 ## Architecture
 - [Backend Architecture](ARCHITECTURE.md) — FastAPI, agents, database schema
@@ -22,7 +23,7 @@ Welcome to the central documentation index. Here you will find guides covering d
 
 ## About
 - Built by one. Owned by everyone.
-- 1 Million Stars Challenge: [Live Counter](https://github.com/Savior-Systems/MarketMind)
+- 1 Million Stars Challenge: [Live Counter](https://savior-systems.github.io/MarketMind/)
 
 ---
 

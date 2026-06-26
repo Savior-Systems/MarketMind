@@ -8,11 +8,13 @@
 </p>
 
 <p align="center"><strong>The AI marketing team that lives on your server.</strong></p>
-<p align="center">Open source. Self-hosted. Free forever.</p>
+<p align="center">Open source. Self-hosted. Free forever. | <a href="https://savior-systems.github.io/MarketMind/">Challenge Landing Page</a></p>
 
 ---
 
-<!-- TODO: add demo GIF -->
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="MarketMind Demo" width="700" />
+</p>
 
 ## What Does It Replace?
 

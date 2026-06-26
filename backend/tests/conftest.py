@@ -5,8 +5,11 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 
-# Base Declarative Meta referenced by tests
-Base = declarative_base()
+from app.core.database import Base
+from app.models.user import User
+from app.models.brand import BrandProfile
+from app.models.content import ContentPiece
+from app.models.agent_run import AgentRun
 
 # Async SQLite in-memory database configuration for fast and clean local TDD
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"

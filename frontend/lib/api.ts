@@ -142,3 +142,7 @@ export async function getPublicMetrics() {
 export async function getTaskStatus(taskId: string) {
   return request(`/agents/task/${taskId}`);
 }
+
+export async function getSavings(brandId: number) {
+  return request(`/analytics/savings?brand_profile_id=${brandId}`);
+}

@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import Link from 'next/link';
+import { CostTransparency } from '@/components/features/cost-transparency';
 
 interface ContentPiece {
   id: number;
@@ -34,6 +35,7 @@ interface ContentPiece {
   status: string;
   scheduled_at?: string;
   published_at?: string;
+  created_at?: string;
 }
 
 interface AgentRun {
@@ -318,78 +320,85 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Bottom Section: Recent Activity (AgentRuns) */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-200">Recent AI Agent Activity</h2>
-          <Button asChild variant="link" className="text-xs text-purple-400 hover:text-purple-300 px-0">
-            <Link href="/settings">View Logs</Link>
-          </Button>
+      {/* Bottom Section: Recent Activity & Cost Transparency */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-gray-200">Recent AI Agent Activity</h2>
+            <Button asChild variant="link" className="text-xs text-purple-400 hover:text-purple-300 px-0">
+              <Link href="/settings">View Logs</Link>
+            </Button>
+          </div>
+
+          <Card className="bg-gray-950 border-gray-900 overflow-hidden shadow-xl">
+            {runsLoading ? (
+              <div className="p-6 space-y-4">
+                <Skeleton className="h-6 w-full bg-gray-900" />
+                <Skeleton className="h-6 w-full bg-gray-900" />
+                <Skeleton className="h-6 w-full bg-gray-900" />
+              </div>
+            ) : runsList.length === 0 ? (
+              <div className="p-8 text-center text-sm text-gray-500 space-y-3">
+                <p>Welcome to MarketMind! Start by creating a Brand Profile in Settings.</p>
+                <Button asChild variant="outline" size="sm" className="border-gray-800 text-gray-300 hover:bg-gray-900">
+                  <Link href="/settings">Create Brand Profile</Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-900 bg-gray-900/30 text-gray-400 font-semibold text-xs uppercase tracking-wider">
+                      <th className="p-4">Agent Name</th>
+                      <th className="p-4">Status</th>
+                      <th className="p-4">Timestamp</th>
+                      <th className="p-4 text-right">Tokens Used</th>
+                      <th className="p-4 text-right">Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-900/60 text-gray-300">
+                    {runsList.slice(0, 10).map((run) => (
+                      <tr key={run.id} className="hover:bg-gray-900/20 transition-colors">
+                        <td className="p-4 font-medium text-gray-200 flex items-center gap-2">
+                          <Bot className="h-4 w-4 text-purple-400" />
+                          {run.agent_name}
+                        </td>
+                        <td className="p-4">
+                          <Badge
+                            variant="outline"
+                            className={
+                              run.status === 'success' || run.status === 'completed'
+                                ? 'border-green-500/20 bg-green-500/10 text-green-400'
+                                : run.status === 'failed' || run.status === 'error'
+                                ? 'border-red-500/20 bg-red-500/10 text-red-400'
+                                : 'border-yellow-500/20 bg-yellow-500/10 text-yellow-400'
+                            }
+                          >
+                            {run.status}
+                          </Badge>
+                        </td>
+                        <td className="p-4 text-gray-500 text-xs">
+                          {new Date(run.started_at).toLocaleString()}
+                        </td>
+                        <td className="p-4 text-right text-gray-400 font-mono text-xs">
+                          {run.tokens_used.toLocaleString()}
+                        </td>
+                        <td className="p-4 text-right text-purple-400 font-mono font-semibold text-xs">
+                          ${run.cost_usd.toFixed(4)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
         </div>
 
-        <Card className="bg-gray-950 border-gray-900 overflow-hidden shadow-xl">
-          {runsLoading ? (
-            <div className="p-6 space-y-4">
-              <Skeleton className="h-6 w-full bg-gray-900" />
-              <Skeleton className="h-6 w-full bg-gray-900" />
-              <Skeleton className="h-6 w-full bg-gray-900" />
-            </div>
-          ) : runsList.length === 0 ? (
-            <div className="p-8 text-center text-sm text-gray-500 space-y-3">
-              <p>Welcome to MarketMind! Start by creating a Brand Profile in Settings.</p>
-              <Button asChild variant="outline" size="sm" className="border-gray-800 text-gray-300 hover:bg-gray-900">
-                <Link href="/settings">Create Brand Profile</Link>
-              </Button>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm border-collapse">
-                <thead>
-                  <tr className="border-b border-gray-900 bg-gray-900/30 text-gray-400 font-semibold text-xs uppercase tracking-wider">
-                    <th className="p-4">Agent Name</th>
-                    <th className="p-4">Status</th>
-                    <th className="p-4">Timestamp</th>
-                    <th className="p-4 text-right">Tokens Used</th>
-                    <th className="p-4 text-right">Cost</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-900/60 text-gray-300">
-                  {runsList.slice(0, 10).map((run) => (
-                    <tr key={run.id} className="hover:bg-gray-900/20 transition-colors">
-                      <td className="p-4 font-medium text-gray-200 flex items-center gap-2">
-                        <Bot className="h-4 w-4 text-purple-400" />
-                        {run.agent_name}
-                      </td>
-                      <td className="p-4">
-                        <Badge
-                          variant="outline"
-                          className={
-                            run.status === 'success' || run.status === 'completed'
-                              ? 'border-green-500/20 bg-green-500/10 text-green-400'
-                              : run.status === 'failed' || run.status === 'error'
-                              ? 'border-red-500/20 bg-red-500/10 text-red-400'
-                              : 'border-yellow-500/20 bg-yellow-500/10 text-yellow-400'
-                          }
-                        >
-                          {run.status}
-                        </Badge>
-                      </td>
-                      <td className="p-4 text-gray-500 text-xs">
-                        {new Date(run.started_at).toLocaleString()}
-                      </td>
-                      <td className="p-4 text-right text-gray-400 font-mono text-xs">
-                        {run.tokens_used.toLocaleString()}
-                      </td>
-                      <td className="p-4 text-right text-purple-400 font-mono font-semibold text-xs">
-                        ${run.cost_usd.toFixed(4)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
+        <div className="space-y-4">
+          <h2 className="text-lg font-bold text-gray-200">Financial Transparency</h2>
+          <CostTransparency contentList={contentList} runsList={runsList} />
+        </div>
       </div>
     </div>
   );

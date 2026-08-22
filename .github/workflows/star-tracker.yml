@@ -49,7 +49,7 @@ jobs:
               current_stars = repo_data.get("stargazers_count", 0)
           except Exception as e:
               print(f"Error fetching current stars: {e}")
-              current_stars = 100
+              current_stars = 0
 
           now = datetime.now(timezone.utc)
           
@@ -57,7 +57,7 @@ jobs:
           if os.path.exists("STARS.md"):
               with open("STARS.md", "r", encoding="utf-8") as f:
                   content = f.read()
-              matches = re.findall(r"-\s+([\d-T:Z\+\.]+):\s+(\d+)\s+stars", content)
+              matches = re.findall(r"-\s+(\S+):\s+(\d+)\s+stars", content)
               for m in matches:
                   try:
                       ts = datetime.fromisoformat(m[0].replace("Z", "+00:00"))
@@ -118,5 +118,6 @@ jobs:
             echo "No changes in STARS.md"
           else
             git commit -m "docs: auto-update STARS.md star metrics"
+            git pull --rebase origin main || true
             git push
           fi

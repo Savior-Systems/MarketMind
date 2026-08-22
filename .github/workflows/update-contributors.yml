@@ -57,6 +57,7 @@ jobs:
           git add CONTRIBUTORS.md
           if ! git diff-index --quiet HEAD; then
             git commit -m "chore(contributors): auto-update contributors list"
+            git pull --rebase origin main || true
             git push origin main
           fi
         env:

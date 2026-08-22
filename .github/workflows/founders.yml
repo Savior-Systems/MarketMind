@@ -109,5 +109,6 @@ jobs:
             echo "No changes in FOUNDERS.md"
           else
             git commit -m "docs: auto-update FOUNDERS.md stargazers list"
+            git pull --rebase origin main || true
             git push
           fi

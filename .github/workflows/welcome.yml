@@ -3,7 +3,7 @@ name: Welcome First Interaction
 on:
   issues:
     types: [opened]
-  pull_request:
+  pull_request_target:
     types: [opened]
 
 jobs:
@@ -15,9 +15,10 @@ jobs:
     steps:
       - name: Welcome first-time contributor
         uses: actions/first-interaction@v1.1.1
+        continue-on-error: true
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-message: |
-            👋 Thanks for opening your first issue/PR at MarketMind! We appreciate your contribution. Check out our [Contributing Guide](CONTRIBUTING.md) and join our [Discord](https://discord.gg/marketmind)!
+            👋 Thanks for opening your first issue at MarketMind! We appreciate your contribution. Check out our [Contributing Guide](CONTRIBUTING.md) and join our [Discord](https://discord.gg/marketmind)!
           pr-message: |
-            👋 Thanks for opening your first issue/PR at MarketMind! We appreciate your contribution. Check out our [Contributing Guide](CONTRIBUTING.md) and join our [Discord](https://discord.gg/marketmind)!
+            👋 Thanks for opening your first Pull Request at MarketMind! We appreciate your contribution. Check out our [Contributing Guide](CONTRIBUTING.md) and join our [Discord](https://discord.gg/marketmind)!
